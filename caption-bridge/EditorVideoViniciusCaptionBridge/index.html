@@ -1,0 +1,62 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Vinicius Caption Bridge</title></head>
+<body style="display:none">
+<script>
+(function () {
+  const http = require('http');
+  const PORT = 32147;
+
+  function send(res, status, obj) {
+    res.writeHead(status, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+    });
+    res.end(JSON.stringify(obj));
+  }
+
+  function evalScript(code) {
+    return new Promise((resolve) => {
+      try {
+        window.__adobe_cep__.evalScript(code, resolve);
+      } catch (e) {
+        resolve(JSON.stringify({ ok:false, error:String(e) }));
+      }
+    });
+  }
+
+  const server = http.createServer((req, res) => {
+    if (req.method === 'OPTIONS') return send(res, 200, { ok:true });
+    if (req.method === 'GET' && req.url === '/health') {
+      return send(res, 200, { ok:true, version:'1.0.0', host:'Premiere CEP/ExtendScript' });
+    }
+    if (req.method === 'POST' && req.url === '/create-caption-track') {
+      let body = '';
+      req.on('data', chunk => {
+        body += chunk.toString('utf8');
+        if (body.length > 2 * 1024 * 1024) req.destroy();
+      });
+      req.on('end', async () => {
+        try {
+          const data = JSON.parse(body || '{}');
+          if (!data.srtPath) return send(res, 400, { ok:false, error:'srtPath ausente' });
+          const code = '$._ViniciusCaptionBridge.createCaptionTrack(' + JSON.stringify(String(data.srtPath)) + ',' + JSON.stringify(String(data.sequenceName || '')) + ')';
+          const raw = await evalScript(code);
+          let parsed = null;
+          try { parsed = JSON.parse(raw); } catch (_) { parsed = { ok:false, error:String(raw || 'Resposta inválida do ExtendScript') }; }
+          return send(res, parsed && parsed.ok ? 200 : 500, parsed);
+        } catch (e) {
+          return send(res, 500, { ok:false, error:String(e && e.message || e) });
+        }
+      });
+      return;
+    }
+    send(res, 404, { ok:false, error:'not found' });
+  });
+
+  server.on('error', function () {});
+  server.listen(PORT, '127.0.0.1');
+})();
+</script>
+</body></html>

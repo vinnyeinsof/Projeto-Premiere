@@ -1,0 +1,42 @@
+{
+  "manifestVersion": 5,
+  "id": "com.vincofer.editorvideo.creator",
+  "name": "Editor de video Vinicius",
+  "version": "2.4.1",
+  "main": "index.html",
+  "host": {
+    "app": "premierepro",
+    "minVersion": "26.3.0"
+  },
+  "requiredPermissions": {
+    "localFileSystem": "fullAccess",
+    "network": {
+      "domains": [
+        "https://generativelanguage.googleapis.com"
+      ]
+    }
+  },
+  "entrypoints": [
+    {
+      "type": "panel",
+      "id": "editorViniciusB",
+      "label": "Editor de video Vinicius",
+      "minimumSize": {
+        "width": 360,
+        "height": 480
+      },
+      "maximumSize": {
+        "width": 2200,
+        "height": 2200
+      },
+      "preferredDockedSize": {
+        "width": 460,
+        "height": 760
+      },
+      "preferredFloatingSize": {
+        "width": 560,
+        "height": 820
+      }
+    }
+  ]
+}

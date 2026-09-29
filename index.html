@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand-mark">V</div>
+        <div class="brand-copy">
+          <h1>Editor de video Vinicius</h1>
+          <div id="simplePresetSummary" class="subtitle">Reels / TikTok · 9:16 · até 2 min · cobertura total</div>
+        </div>
+      </div>
+      <div id="appStatus" class="pill idle">Iniciando…</div>
+    </header>
+
+    <section class="composer">
+      <label for="deliveryPreset" class="compact-label">Preset</label>
+      <select id="deliveryPreset" class="preset-select">
+        <option value="reels" selected>Reels / TikTok · 9:16</option>
+        <option value="event">Evento / apresentação · visual</option>
+        <option value="photos">Fotos / slideshow · visual</option>
+        <option value="interview">Entrevista / depoimento</option>
+        <option value="youtube">YouTube · 16:9</option>
+        <option value="institutional">Institucional · 16:9</option>
+        <option value="custom">Personalizado</option>
+      </select>
+
+      <label for="prompt" class="prompt-label">Pedido para a IA</label>
+      <textarea id="prompt"></textarea>
+
+      <button id="editAI" class="primary"><span class="button-icon">✦</span> EDITAR COM IA</button>
+
+      <div id="progressWrap" class="progress-wrap hidden">
+        <div class="progress-head"><span id="progressText">Preparando…</span><span class="progress-live">DIRECTOR</span></div>
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+      </div>
+      <div id="result" class="result">Pronto para editar.</div>
+    </section>
+
+    <details id="advancedMode" class="advanced-root">
+      <summary><span>Modo Avançado</span><small>abrir configurações adicionais</small></summary>
+      <div class="advanced-body">
+
+        <details class="advanced-section">
+          <summary><span>Material de origem</span><small>projeto, sequência e fontes</small></summary>
+          <div class="advanced-section-body">
+            <div class="section-heading">
+              <div>
+                <div class="eyebrow">TIMELINE ATIVA</div>
+                <h2>Material de origem</h2>
+              </div>
+              <button id="refresh" class="icon-button" title="Ler timeline novamente">↻</button>
+            </div>
+            <div class="timeline-info">
+              <div><span>Projeto</span><strong id="projectName">—</strong></div>
+              <div><span>Sequência</span><strong id="sequenceName">—</strong></div>
+              <div><span>Clipes</span><strong id="timelineCount">0</strong></div>
+              <div><span>Fontes únicas</span><strong id="sourceCount">0</strong></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="advanced-section">
+          <summary><span>Entrega e enquadramento</span><small>formato, duração, Auto Reframe</small></summary>
+          <div class="advanced-section-body">
+            <div class="eyebrow">ENTREGA</div>
+            <h2>Contrato do preset</h2>
+            <div class="field-grid three">
+              <div>
+                <label for="outputAspect">Formato</label>
+                <select id="outputAspect">
+                  <option value="9:16">9:16 · 1080×1920</option>
+                  <option value="16:9">16:9 · 1920×1080</option>
+                  <option value="1:1">1:1 · 1080×1080</option>
+                  <option value="source">Manter origem</option>
+                </select>
+              </div>
+              <div>
+                <label for="durationLimit">Duração máxima</label>
+                <select id="durationLimit">
+                  <option value="30">30 s</option>
+                  <option value="45">45 s</option>
+                  <option value="60">1 min</option>
+                  <option value="90">1 min 30 s</option>
+                  <option value="120" selected>2 min</option>
+                  <option value="180">3 min</option>
+                  <option value="300">5 min</option>
+                  <option value="0">Livre</option>
+                </select>
+              </div>
+              <div>
+                <label for="editIntensity">Ritmo</label>
+                <select id="editIntensity">
+                  <option value="natural">Natural</option>
+                  <option value="balanced" selected>Equilibrado</option>
+                  <option value="dynamic">Dinâmico</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-grid">
+              <div>
+                <label for="stylePreset">Estilo editorial</label>
+                <select id="stylePreset">
+                  <option value="tiktok" selected>Creator / social</option>
+                  <option value="talking">Talking Head</option>
+                  <option value="institutional">Institucional</option>
+                  <option value="visual">Visual / evento</option>
+                </select>
+              </div>
+              <div>
+                <label for="qualityMode">Qualidade da IA</label>
+                <select id="qualityMode">
+                  <option value="fast">Econômico — Flash Lite</option>
+                  <option value="pro" selected>Director Pro — Gemini 3.7 Flash</option>
+                </select>
+              </div>
+            </div>
+            <div id="styleHint" class="hint">O preset define o padrão; o contexto real do material pode mudar a estratégia automaticamente.</div>
+
+            <div class="options compact-options">
+              <label><input id="optRequireAllSources" type="checkbox" checked /><span><strong>Usar todos os vídeos</strong><small>Garante pelo menos um trecho útil de cada fonte.</small></span></label>
+              <label><input id="optAutoReframe" type="checkbox" checked /><span><strong>Auto Reframe</strong><small>Ao ativar, força 9:16 e acompanha o assunto com Scale/Position.</small></span></label>
+              <label><input id="optAnalyzeVideo" type="checkbox" checked /><span><strong>Analisar imagem + áudio</strong><small>Entende fala, dança, ação, fotos, enquadramento e contexto.</small></span></label>
+              <label><input id="optNewSequence" type="checkbox" checked disabled /><span><strong>Preservar original</strong><small>A IA sempre monta em uma sequência nova.</small></span></label>
+            </div>
+          </div>
+        </details>
+
+        <details class="advanced-section">
+          <summary><span>Acabamento</span><small>cor, áudio, transições e música</small></summary>
+          <div class="advanced-section-body">
+            <div class="eyebrow">ACABAMENTO</div>
+            <h2>Imagem, áudio e transições</h2>
+            <div class="options">
+              <label><input id="optMusic" type="checkbox" checked /><span><strong>Música automática</strong><small>Usa apenas áudio já no projeto ou na pasta que você salvou.</small></span></label>
+              <label><input id="optMusicCrossfade" type="checkbox" checked /><span><strong>Crossfade nos loops</strong><small>Alterna A3/A4 e suaviza emendas quando a música precisa repetir.</small></span></label>
+              <label><input id="optStyle" type="checkbox" checked /><span><strong>Reframes / punch-ins</strong><small>Varia enquadramento com intenção editorial.</small></span></label>
+              <label><input id="optTransitions" type="checkbox" checked /><span><strong>Transições inteligentes</strong><small>Usa mais dissolves em material visual/fotos e menos em fala.</small></span></label>
+              <label><input id="optForceFinish" type="checkbox" checked /><span><strong>Acabamento automático</strong><small>Adiciona pattern interrupts sem exagero.</small></span></label>
+              <label><input id="optColorGrade" type="checkbox" checked /><span><strong>Color grading</strong><small>Equaliza exposição, branco, contraste e saturação via Lumetri.</small></span></label>
+              <label><input id="optFineMix" type="checkbox" checked /><span><strong>Mixagem fina</strong><small>Nivela voz quando há fala; em conteúdo visual deixa a música respirar.</small></span></label>
+              <label><input id="optBranding" type="checkbox" checked /><span><strong>Branding automático</strong><small>Aplica logo e/ou vinheta quando os assets estiverem configurados.</small></span></label>
+            </div>
+          </div>
+        </details>
+
+        <details class="advanced-section">
+          <summary><span>Contexto da Marca</span><small>tone of voice persistente</small></summary>
+          <div class="advanced-section-body">
+            <div class="eyebrow">TONE OF VOICE</div>
+            <h2>Contexto permanente</h2>
+            <textarea id="brandContext" class="context-textarea" placeholder="Ex.: comunicação acolhedora e elegante; não usar linguagem infantilizada; cores naturais; ritmo contemporâneo; priorizar emoção genuína; nunca usar transições chamativas."></textarea>
+            <div class="inline-actions">
+              <button id="saveBrandContext" class="secondary">Salvar contexto</button>
+              <span id="brandContextStatus" class="muted">Salvo localmente e anexado a todas as edições.</span>
+            </div>
+          </div>
+        </details>
+
+        <details id="brandAssetsSection" class="advanced-section brand-assets-section">
+          <summary><span>Brand Assets</span><small>logo e vinheta final</small></summary>
+          <div class="advanced-section-body">
+            <div class="eyebrow">BRANDING</div>
+            <h2>Logo e vinheta final</h2>
+            <div class="brand-folder-callout">
+              <div>
+                <strong>Configurar os dois de uma vez</strong>
+                <span class="muted">Escolha uma pasta que contenha o logo e/ou a vinheta. O plugin procura nomes como logo.png, logo.jpg, vinheta_final.mp4, vinheta.mp4 e outro.mp4.</span>
+              </div>
+              <button id="chooseBrandFolder" class="secondary">Selecionar pasta de Brand Assets</button>
+            </div>
+            <div class="asset-grid">
+              <div class="asset-card">
+                <strong>Logo</strong>
+                <span id="logoStatus" class="muted">Nenhum logo configurado.</span>
+                <div class="inline-actions"><button id="chooseLogo" class="secondary">Selecionar arquivo do logo</button><button id="clearLogo" class="ghost-button">Limpar</button></div>
+              </div>
+              <div class="asset-card">
+                <strong>Vinheta final</strong>
+                <span id="outroStatus" class="muted">Nenhuma vinheta configurada.</span>
+                <div class="inline-actions"><button id="chooseOutro" class="secondary">Selecionar arquivo da vinheta</button><button id="clearOutro" class="ghost-button">Limpar</button></div>
+              </div>
+            </div>
+            <div class="field-grid">
+              <div><label for="logoScale">Escala do logo</label><input id="logoScale" type="text" value="18" /></div>
+              <div><label for="logoPosition">Posição</label><select id="logoPosition"><option value="top-right" selected>Superior direita</option><option value="top-left">Superior esquerda</option><option value="bottom-right">Inferior direita</option><option value="bottom-left">Inferior esquerda</option></select></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="advanced-section">
+          <summary><span>Biblioteca de músicas</span><small>pasta opcional</small></summary>
+          <div class="advanced-section-body">
+            <div class="eyebrow">MÚSICA</div>
+            <h2>Biblioteca opcional</h2>
+            <div id="musicFolderStatus" class="muted">Usa músicas importadas no projeto. Nenhuma pasta adicional configurada.</div>
+            <div class="inline-actions"><button id="chooseMusicFolder" class="secondary">Escolher / trocar pasta de músicas</button><button id="clearMusicFolder" class="ghost-button">Remover pasta</button></div>
+            <div class="micro-note">O plugin nunca abre o Finder sozinho. Se não houver música disponível, ele simplesmente edita sem trilha.</div>
+          </div>
+        </details>
+
+        <details id="geminiAdvancedSection" class="advanced-section">
+          <summary><span>Gemini e diagnóstico</span><small>API Key, modelo, cache e log</small></summary>
+          <div class="advanced-section-body diagnostics-section">
+            <div class="eyebrow">GEMINI</div>
+            <div class="api-strip compact-api-strip">
+              <div><strong>Gemini API</strong><span id="apiKeyStatus">Verificando…</span></div>
+              <button id="changeKey" class="ghost-button">Alterar API Key</button>
+            </div>
+            <div id="keySetup" class="key-editor hidden">
+              <label for="apiKey">Gemini API Key</label>
+              <input id="apiKey" type="password" placeholder="Cole a chave aqui" />
+              <div class="inline-actions"><button id="saveKey" class="secondary">Salvar</button><button id="cancelKey" class="ghost-button">Cancelar</button></div>
+              <div class="micro-note">A chave fica somente no SecureStorage do UXP.</div>
+            </div>
+
+            <div class="diagnostic-gap"></div>
+            <div class="timeline-info">
+              <div><span>Modelo final</span><strong id="activeModel">gemini-3.7-flash</strong></div>
+              <div><span>Cache Gemini</span><strong id="contextCacheStatus">uploads reutilizáveis</strong></div>
+            </div>
+            <div id="qualityHint" class="hint">Director Pro usa Gemini 3.7 Flash na montagem final.</div>
+            <div class="inline-actions"><button id="clearCache" class="secondary">Limpar cache</button></div>
+            <pre id="log">Editor de video Vinicius 2.4.1</pre>
+          </div>
+        </details>
+
+      </div>
+    </details>
+
+    <footer>Director 2.4.1 · Premiere Pro UXP 26.3+</footer>
+  </main>
+  <script src="main.js"></script>
+</body>
+</html>
